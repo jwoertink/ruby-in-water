@@ -1,0 +1,23 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+readonly threads=2
+readonly base="http://localhost:9292"
+
+measure_api() {
+  measure "/"
+}
+
+measure() {
+  local endpoint=$1
+
+  echo "Measuring $endpoint"
+  wrk -t $threads $base$endpoint/
+}
+
+main() {
+  measure_api
+}
+
+main

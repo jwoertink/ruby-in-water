@@ -18,10 +18,24 @@ This is a sample app based on [this article](http://lucaguidi.com/2015/12/09/250
   `./bin/server`
 
 ## Benchmarks
+  First start your server, then open a second tab and run
 
   `./bin/bench`
 
-  
+```text
+ruby-in-water (master)$ bin/bench
+Measuring /
+Running 10s test @ http://localhost:9292/
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   227.44us   54.09us   2.89ms   88.15%
+    Req/Sec    21.75k   288.47    22.49k    64.50%
+  432749 requests in 10.00s, 79.24MB read
+Requests/sec:  43274.32
+Transfer/sec:    7.92MB
+```
+
+This example shows that I benchmarked the home page and got *43,274* req/sec.
 
 ## Acknowledgement
 

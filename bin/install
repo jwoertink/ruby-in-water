@@ -8,6 +8,11 @@ readonly src="src"
 readonly dist="dist"
 declare -a dependencies=("Asmod4n/mruby-hiredis")
 
+check_prereq() {
+  command -v gcc >/dev/null 2>&1 || { echo >&2 "Could not locate required gcc. Aborting."; exit 1; }
+  command -v cmake >/dev/null 2>&1 || { echo >&2 "Could not locate required cmake. Aborting."; exit 1; }
+}
+
 create_tmp() {
   mkdir -p tmp
 }
@@ -60,6 +65,7 @@ install() {
 }
 
 main() {
+  check_prereq
   create_tmp
   download
   add_dependencies

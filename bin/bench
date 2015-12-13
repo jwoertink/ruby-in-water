@@ -13,7 +13,7 @@ measure() {
   local endpoint=$1
 
   echo "Measuring $endpoint"
-  wrk -t $threads $base$endpoint/
+  wrk -t $threads $base$endpoint
 }
 
 main() {

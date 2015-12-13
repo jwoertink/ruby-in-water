@@ -37,6 +37,8 @@ Transfer/sec:    7.92MB
 
 This example shows that I benchmarked the home page and got *43,274* req/sec.
 
+This was ran on my MacBook Pro (mid 2012) 2.7Ghz i7 with 16 GB 1600 MHz DDR3 running El Capitan.
+
 ## Acknowledgement
 
 Gotta give a shout out to [Luca Guidi](http://lucaguidi.com) for all the work he's done in this space!

@@ -1,30 +1,82 @@
 module MSinatra
   class Base
-    @@paths = []
+    @@get_routes = []
 
     def self.get(path, &block)
-      @@paths << {route: path, body: block.call, status: 200}
+      @@get_routes << {route: path, body: block, status: 200}
     end
 
-    def self.paths
-      @@paths
+    def self.get_routes
+      @@get_routes
+    end
+
+    def initialize
+      @storage = Hiredis.new
+      @storage['1'] = {id: 1, title: 'Test', body: 'this is a test post'}
     end
 
     def call(env)
-      paths = self.class.paths
-      path = paths.find { |k,v| k[:route] == env["PATH_INFO"] } || not_found
+      path = RouteFinder.new(env).search
+      response = Response.new(path, env).body
       [
         path[:status],
         {'Content-Type'   => 'application/json',
-         'Content-Length' => path[:body].size},
-         [path[:body]]
+         'Content-Length' => response.size},
+         [response]
       ]
+    end
+
+  end
+
+  class RouteFinder
+    def initialize(env)
+      @env = env
+    end
+
+    # Need to find the route that matches exactly
+    #   /posts == /posts
+    # or matched with params like
+    #   /posts/1 == /posts/:id
+    def search
+      paths = Base.send("#{@env["REQUEST_METHOD"].downcase}_routes")
+      path = paths.find { |k,v| path_matches?(k[:route]) }
+
+      return path || not_found
     end
 
     private
 
     def not_found
-      {route: '/404', body: 'Not Found', status: 404}
+      {route: '/404', body: -> {'Not Found'}, status: 404}
+    end
+
+    def path_matches?(path)
+      if path == @env["PATH_INFO"]
+        return true
+      else
+        set1 = path.split('/')
+        set2 = @env["PATH_INFO"].split('/')
+        params = set1.reject {|s| set2.include?(s) } + set2.reject {|s| set1.include?(s)}
+        if params.size % 2 == 0
+          params = Hash[*params.map {|p| p.gsub!(':', '')}]
+          qs = params.to_a.map {|a| a.join('=') }.join('&')
+          @env['QUERY_STRING'] = [@env['QUERY_STRING'], qs].join('&')
+          return true
+        end
+      end
+
+      false
+    end
+  end
+
+  class Response
+    def initialize(path, env)
+      @path, @env = path, env
+    end
+
+    def body
+      params = Hash[*@env['QUERY_STRING'].split('&').map {|p| p.split('=') }.flatten]
+      @path[:body].call(params)
     end
 
   end

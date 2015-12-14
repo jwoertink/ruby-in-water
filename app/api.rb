@@ -9,6 +9,10 @@ class Api < MSinatra::Base
   get "/posts" do
     "posts"
   end
+
+  get "/posts/:id" do |params|
+    params[:id]
+  end
 end
 
 Api.new

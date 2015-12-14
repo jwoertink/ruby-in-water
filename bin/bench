@@ -9,8 +9,12 @@ check_prereq() {
   command -v wrk >/dev/null 2>&1 || { echo >&2 "Could not locate required wrk. Aborting."; exit 1; }
 }
 
-measure_api() {
+measure_api_home() {
   measure "/"
+}
+
+measure_api_page() {
+  measure "/posts/1"
 }
 
 measure() {
@@ -22,7 +26,8 @@ measure() {
 
 main() {
   check_prereq
-  measure_api
+  measure_api_home
+  measure_api_page
 }
 
 main

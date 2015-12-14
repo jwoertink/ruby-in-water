@@ -1,6 +1,7 @@
 require File.join(File.dirname(__FILE__), 'msinatra')
 
 class Api < MSinatra::Base
+  before_filter
 
   get "/" do
     "home"
@@ -11,7 +12,8 @@ class Api < MSinatra::Base
   end
 
   get "/posts/:id" do |params|
-    "post page #{params['id']}"
+    post = storage[params['id']]
+    "post page #{post[:body]}"
   end
 end
 

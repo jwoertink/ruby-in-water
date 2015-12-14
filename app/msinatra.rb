@@ -1,6 +1,12 @@
 module MSinatra
   class Base
     @@get_routes = []
+    @@redis = Hiredis.new
+
+    # This is purely for storing the initial data
+    def self.before_filter
+      @@redis['1'] = {id: 1, title: 'Test', body: 'this is a test post'}
+    end
 
     def self.get(path, &block)
       @@get_routes << {route: path, body: block, status: 200}
@@ -10,9 +16,8 @@ module MSinatra
       @@get_routes
     end
 
-    def initialize
-      @storage = Hiredis.new
-      @storage['1'] = {id: 1, title: 'Test', body: 'this is a test post'}
+    def self.storage
+      @@redis
     end
 
     def call(env)

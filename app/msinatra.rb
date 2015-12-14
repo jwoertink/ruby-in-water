@@ -5,7 +5,7 @@ module MSinatra
 
     # This is purely for storing the initial data
     def self.before_filter
-      @@redis['1'] = {id: 1, title: 'Test', body: 'this is a test post'}
+      @@redis['1'] = JSON.generate({id: 1, title: 'Test', body: 'this is a test post'})
     end
 
     def self.get(path, &block)

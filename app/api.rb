@@ -12,8 +12,8 @@ class Api < MSinatra::Base
   end
 
   get "/posts/:id" do |params|
-    post = storage[params['id']]
-    "post page #{post[:body]}"
+    post = JSON.parse(storage[params['id']])
+    "post page #{post['body']}"
   end
 end
 

@@ -56,9 +56,9 @@ module MSinatra
       else
         set1 = path.split('/')
         set2 = @env["PATH_INFO"].split('/')
-        params = set1.reject {|s| set2.include?(s) } + set2.reject {|s| set1.include?(s)}
-        if params.size % 2 == 0
-          params = Hash[*params.map {|p| p.gsub!(':', '')}]
+        params = (set1.reject {|s| set2.include?(s) } + set2.reject {|s| set1.include?(s)}).delete_if(&:empty?)
+        if params.size % 2 == 0 && params.any?{|p| p.include?(':')}
+          params = Hash[*params.map {|p| p.gsub!(':', '') if p.include?(':'); p}]
           qs = params.to_a.map {|a| a.join('=') }.join('&')
           @env['QUERY_STRING'] = [@env['QUERY_STRING'], qs].join('&')
           return true

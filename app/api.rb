@@ -11,7 +11,7 @@ class Api < MSinatra::Base
   end
 
   get "/posts/:id" do |params|
-    params[:id]
+    "post page #{params['id']}"
   end
 end
 
